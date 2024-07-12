@@ -2,11 +2,13 @@ package com.arch.presentation.router.user;
 
 import com.arch.presentation.controller.user.CreateUserController;
 import com.arch.presentation.module.user.UserModule;
+import com.arch.presentation.responses.MessageResponse;
 import com.arch.utils.ParseJsonFields;
 import com.arch.utils.ParseRequestBody;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import static com.arch.presentation.responses.MessageResponse.sendResponse;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,10 +33,8 @@ public class UserRouter {
                 try {
                     if ("POST".equals(exchange.getRequestMethod())) {
                         String requestBody = ParseRequestBody.parseBody(exchange);
-                        System.out.println("Request Body: " + requestBody);
 
                         Map<String, String> fields = ParseJsonFields.parse(requestBody);
-                        System.out.println("Parsed Fields: " + fields);
 
                         String firstName = fields.getOrDefault("firstname", "");
                         String lastName = fields.getOrDefault("lastname", "");
@@ -59,20 +59,6 @@ public class UserRouter {
         });
     }
 
-
-    private void sendResponse(HttpExchange exchange, int statusCode, String responseMessage) throws IOException {
-        // Configurar o cabeçalho Content-Type
-        exchange.getResponseHeaders().set("Content-Type", "application/json");
-
-        // Montar o objeto de resposta em formato JSON
-        String jsonResponse = "{\"statusCode\": " + statusCode + ", \"message\": \"" + responseMessage + "\"}";
-
-        // Enviar a resposta com o status e corpo JSON
-        exchange.sendResponseHeaders(statusCode, jsonResponse.getBytes().length);
-        try (OutputStream responseBody = exchange.getResponseBody()) {
-            responseBody.write(jsonResponse.getBytes());
-        }
-    }
 
     private void sendErrorResponse(HttpExchange exchange, int statusCode, String errorMessage) throws IOException {
         exchange.getResponseHeaders().set("Content-Type", "application/json");
