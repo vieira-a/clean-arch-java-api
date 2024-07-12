@@ -22,8 +22,8 @@ public class UserRouter {
 
     public void configureRoutes() {
         CreateUserController createUserController = userModule.getCreateUserController();
-        String userRouter = createUserController.getRoute();
-        server.createContext(userRouter, exchange -> {
+        String createUserRouter = createUserController.getRoute();
+        server.createContext(createUserRouter, exchange -> {
             try {
                 if ("POST".equals(exchange.getRequestMethod())) {
                     String requestBody = ParseRequestBody.parseBody(exchange);
